@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FIBRIS Harmonogram</title>
+<style>
+  :root {
+    /* Apple Dark Palette */
+    --bg-primary:    #000000;
+    --bg-secondary:  #1c1c1e;
+    --bg-tertiary:   #2c2c2e;
+    --bg-quaternary: #3a3a3c;
+    --bg-glass:      rgba(28,28,30,0.72);
+
+```
+--label-primary:   #ffffff;
+--label-secondary: rgba(235,235,245,0.6);
+--label-tertiary:  rgba(235,235,245,0.3);
+--label-quaternary:rgba(235,235,245,0.18);
+
+--separator: rgba(84,84,88,0.65);
+--separator-opaque: #38383a;
+
+/* Apple System Colors */
+--blue:   #0a84ff;
+--green:  #30d158;
+--orange: #ff9f0a;
+--red:    #ff453a;
+--indigo: #5e5ce6;
+
+/* Shifts */
+--ranna: #ff9f0a;
+--popol: #30d158;
+--nocna: #5e5ce6;
+--wolne: #ff453a;
+--urlop: #30d158;
+
+--radius-sm: 10px;
+--radius-md: 14px;
+--radius-lg: 20px;
+--radius-xl: 28px;
+```
+
+}
+
+- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html { background: var(–bg-primary); }
+
+body {
+background: var(–bg-primary);
+color: var(–label-primary);
+font-family: -apple-system, ‘SF Pro Display’, ‘SF Pro Text’, ‘Helvetica Neue’, sans-serif;
+min-height: 100vh;
+-webkit-font-smoothing: antialiased;
+}
+
+/* ══ HEADER ══ */
+.header {
+position: sticky; top: 0; z-index: 100;
+background: var(–bg-glass);
+backdrop-filter: blur(20px) saturate(180%);
+-webkit-backdrop-filter: blur(20px) saturate(180%);
+border-bottom: 0.5px solid var(–separator);
+padding: 16px 20px 14px;
+}
+
+.header-logo-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 14px;
+}
+
+.logo-pill {
+background: rgba(255,255,255,0.08);
+border-radius: 100px;
+padding: 6px 14px 6px 8px;
+display: flex;
+align-items: center;
+gap: 8px;
+border: 0.5px solid rgba(255,255,255,0.12);
+}
+
+.logo-img {
+height: 30px;
+display: block;
+border-radius: 6px;
+background: white;
+padding: 3px 6px;
+animation: logoBreathe 4s ease-in-out infinite;
+}
+
+@keyframes logoBreathe {
+0%,100% { opacity: 1; transform: scale(1); }
+50%      { opacity: 0.88; transform: scale(0.97); }
+}
+
+.logo-label {
+font-size: 13px;
+font-weight: 600;
+color: var(–label-primary);
+letter-spacing: -0.2px;
+}
+
+.today-pill {
+background: var(–blue);
+border: none;
+color: white;
+font-family: inherit;
+font-size: 13px;
+font-weight: 600;
+padding: 7px 16px;
+border-radius: 100px;
+cursor: pointer;
+letter-spacing: -0.1px;
+transition: opacity 0.15s, transform 0.15s;
+}
+.today-pill:active { opacity: 0.7; transform: scale(0.96); }
+
+/* Today card */
+.today-card {
+background: var(–bg-secondary);
+border-radius: var(–radius-md);
+padding: 12px 14px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border: 0.5px solid var(–separator);
+}
+
+.tc-eyebrow {
+font-size: 10px;
+font-weight: 600;
+letter-spacing: 0.6px;
+text-transform: uppercase;
+color: var(–label-tertiary);
+margin-bottom: 3px;
+}
+
+.tc-name {
+font-size: 20px;
+font-weight: 700;
+line-height: 1;
+letter-spacing: -0.3px;
+}
+
+.tc-hours {
+font-size: 12px;
+color: var(–label-secondary);
+margin-top: 3px;
+font-weight: 400;
+letter-spacing: 0.1px;
+}
+
+.tc-icon {
+width: 36px; height: 36px;
+flex-shrink: 0;
+animation: iconFloat 3s ease-in-out infinite;
+}
+.tc-icon svg { width: 36px; height: 36px; }
+.detail-icon-wrap svg { width: 26px; height: 26px; }
+
+@keyframes iconFloat {
+0%,100% { transform: translateY(0); }
+50%      { transform: translateY(-4px); }
+}
+
+/* ══ CAL NAV ══ */
+.cal-nav {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 20px 20px 10px;
+}
+
+.month-label {
+font-size: 22px;
+font-weight: 700;
+letter-spacing: -0.4px;
+color: var(–label-primary);
+}
+
+.nav-cluster {
+display: flex;
+gap: 6px;
+}
+
+.nav-btn {
+background: var(–bg-tertiary);
+border: none;
+color: var(–label-primary);
+width: 32px; height: 32px;
+border-radius: 50%;
+font-size: 16px;
+font-weight: 500;
+cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+transition: background 0.15s, transform 0.1s;
+}
+.nav-btn:active { background: var(–bg-quaternary); transform: scale(0.9); }
+
+/* ══ WEEKDAYS ══ */
+.weekdays {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+padding: 0 12px 6px;
+border-bottom: 0.5px solid var(–separator-opaque);
+margin-bottom: 6px;
+}
+
+.weekday {
+text-align: center;
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.4px;
+text-transform: uppercase;
+color: var(–label-tertiary);
+padding: 4px 0;
+}
+
+/* ══ GRID ══ */
+.cal-grid {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 3px;
+padding: 4px 12px 16px;
+}
+
+.cal-cell {
+aspect-ratio: 1;
+border-radius: var(–radius-sm);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+position: relative;
+transition: transform 0.12s cubic-bezier(0.34,1.56,0.64,1);
+border: 0.5px solid transparent;
+overflow: hidden;
+}
+
+.cal-cell:active { transform: scale(0.86); }
+.cal-cell.empty  { pointer-events: none; background: transparent !important; }
+
+.day-num {
+font-size: 14px;
+font-weight: 500;
+line-height: 1;
+letter-spacing: -0.2px;
+}
+
+.roman {
+font-size: 7px;
+font-weight: 700;
+letter-spacing: 0.4px;
+margin-top: 2px;
+line-height: 1;
+opacity: 0.55;
+}
+
+.shift-pip {
+width: 12px; height: 2px;
+border-radius: 1px;
+margin-top: 3px;
+}
+
+/* Cell tints */
+.cal-cell.ranna { background: rgba(255,159,10,0.12); border-color: rgba(255,159,10,0.1); }
+.cal-cell.popol { background: rgba(48,209,88,0.10); border-color: rgba(48,209,88,0.08); }
+.cal-cell.nocna { background: rgba(94,92,230,0.12); border-color: rgba(94,92,230,0.1); }
+
+.cal-cell.ranna .day-num { color: var(–ranna); }
+.cal-cell.popol .day-num { color: var(–popol); }
+.cal-cell.nocna .day-num { color: var(–nocna); }
+
+.cal-cell.ranna .roman { color: var(–ranna); }
+.cal-cell.popol .roman { color: var(–popol); }
+.cal-cell.nocna .roman { color: var(–nocna); }
+
+.cal-cell.ranna .shift-pip { background: var(–ranna); }
+.cal-cell.popol .shift-pip { background: var(–popol); }
+.cal-cell.nocna .shift-pip { background: var(–nocna); }
+
+/* WOLNE */
+.cal-cell.wolne {
+background: rgba(255,69,58,0.18) !important;
+border-color: rgba(255,69,58,0.15) !important;
+animation: wPulse 2s ease-in-out infinite;
+}
+.cal-cell.wolne .day-num  { color: var(–wolne) !important; font-weight: 600; }
+.cal-cell.wolne .shift-pip { background: var(–wolne); opacity: 0.7; }
+
+.cal-cell.wolne::before {
+content: ‘’;
+position: absolute; inset: 0;
+background: radial-gradient(circle at 50% 50%, rgba(255,69,58,0.12), transparent 70%);
+animation: wGlow 2s ease-in-out infinite;
+border-radius: inherit;
+}
+
+@keyframes wPulse {
+0%,100% { box-shadow: 0 0 0 0 rgba(255,69,58,0); }
+40%      { box-shadow: 0 0 0 4px rgba(255,69,58,0.25); }
+70%      { box-shadow: 0 0 0 7px rgba(255,69,58,0.06); }
+}
+
+@keyframes wGlow {
+0%,100% { opacity: 0.4; transform: scale(0.9); }
+50%      { opacity: 1;   transform: scale(1.1); }
+}
+
+/* URLOP */
+.cal-cell.urlop {
+background: rgba(48,209,88,0.18) !important;
+border-color: rgba(48,209,88,0.2) !important;
+animation: uPulse 2s ease-in-out infinite;
+}
+.cal-cell.urlop .day-num  { color: var(–green) !important; font-weight: 600; }
+.cal-cell.urlop .roman    { color: var(–green) !important; opacity: 0.7; }
+.cal-cell.urlop .shift-pip { background: var(–green); opacity: 0.7; }
+
+.cal-cell.urlop::before {
+content: ‘’;
+position: absolute; inset: 0;
+background: radial-gradient(circle at 50% 50%, rgba(48,209,88,0.12), transparent 70%);
+animation: uGlow 2s ease-in-out infinite;
+border-radius: inherit;
+}
+
+@keyframes uPulse {
+0%,100% { box-shadow: 0 0 0 0 rgba(48,209,88,0); }
+40%      { box-shadow: 0 0 0 4px rgba(48,209,88,0.25); }
+70%      { box-shadow: 0 0 0 7px rgba(48,209,88,0.06); }
+}
+
+@keyframes uGlow {
+0%,100% { opacity: 0.4; transform: scale(0.9); }
+50%      { opacity: 1;   transform: scale(1.1); }
+}
+
+/* TODAY */
+.cal-cell.today-cell {
+outline: 2px solid var(–blue);
+outline-offset: -1px;
+}
+.cal-cell.today-cell .day-num { font-weight: 700; }
+
+/* SELECTED */
+.cal-cell.selected-cell {
+background: var(–blue) !important;
+border-color: var(–blue) !important;
+animation: none !important;
+box-shadow: 0 4px 14px rgba(10,132,255,0.4) !important;
+}
+.cal-cell.selected-cell .day-num  { color: white !important; font-weight: 700; }
+.cal-cell.selected-cell .roman    { color: rgba(255,255,255,0.65) !important; opacity:1; }
+.cal-cell.selected-cell .shift-pip { background: rgba(255,255,255,0.4) !important; }
+.cal-cell.selected-cell::before   { display: none; }
+
+/* ══ CARDS (shared) ══ */
+.card {
+margin: 0 16px 12px;
+background: var(–bg-secondary);
+border-radius: var(–radius-lg);
+border: 0.5px solid var(–separator);
+overflow: hidden;
+animation: cardIn 0.3s cubic-bezier(0.34,1.2,0.64,1);
+}
+
+@keyframes cardIn {
+from { opacity:0; transform: translateY(10px) scale(0.97); }
+to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+.card-accent { height: 3px; }
+
+/* ══ DETAIL CARD ══ */
+.detail-body {
+padding: 16px;
+display: flex;
+align-items: center;
+gap: 14px;
+}
+
+.detail-icon-wrap {
+width: 52px; height: 52px;
+border-radius: var(–radius-sm);
+display: flex; align-items: center; justify-content: center;
+font-size: 26px; flex-shrink: 0;
+animation: iconSpring 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes iconSpring {
+from { transform: scale(0) rotate(-15deg); }
+to   { transform: scale(1) rotate(0); }
+}
+
+.detail-eyebrow {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.4px;
+text-transform: uppercase;
+color: var(–label-tertiary);
+margin-bottom: 3px;
+}
+
+.detail-shift-name {
+font-size: 22px;
+font-weight: 700;
+line-height: 1;
+letter-spacing: -0.3px;
+}
+
+.detail-shift-hours {
+font-size: 13px;
+color: var(–label-secondary);
+margin-top: 4px;
+font-weight: 400;
+}
+
+/* ══ OVERTIME CARD ══ */
+.ot-head {
+padding: 16px 16px 12px;
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+border-bottom: 0.5px solid var(–separator-opaque);
+}
+
+.ot-eyebrow {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.4px;
+text-transform: uppercase;
+color: var(–label-tertiary);
+margin-bottom: 3px;
+}
+
+.ot-month {
+font-size: 15px;
+font-weight: 600;
+color: var(–label-primary);
+letter-spacing: -0.2px;
+}
+
+.ot-value { text-align: right; }
+.ot-big {
+font-size: 34px;
+font-weight: 300;
+line-height: 1;
+letter-spacing: -1.5px;
+animation: cardIn 0.4s ease;
+}
+
+.ot-big-label {
+font-size: 10px;
+font-weight: 500;
+color: var(–label-tertiary);
+text-align: right;
+margin-top: 2px;
+letter-spacing: 0.3px;
+text-transform: uppercase;
+}
+
+.ot-body { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.ot-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.ot-row-label { font-size: 13px; color: var(–label-secondary); font-weight: 400; }
+.ot-row-val   { font-size: 14px; font-weight: 600; color: var(–label-primary); letter-spacing: -0.2px; }
+
+.ot-bar-wrap { margin-top: 2px; }
+.ot-bar-label {
+display: flex; justify-content: space-between;
+font-size: 10px; color: var(–label-tertiary);
+margin-bottom: 6px;
+font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase;
+}
+.ot-bar-track {
+height: 4px;
+background: var(–bg-tertiary);
+border-radius: 2px; overflow: hidden;
+}
+.ot-bar-fill {
+height: 100%; border-radius: 2px;
+transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ══ SUMMARY CARD ══ */
+.sum-head {
+padding: 16px 16px 12px;
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+border-bottom: 0.5px solid var(–separator-opaque);
+}
+
+.sum-eyebrow {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.4px;
+text-transform: uppercase;
+color: var(–label-tertiary);
+margin-bottom: 3px;
+}
+
+.sum-month-label {
+font-size: 15px;
+font-weight: 600;
+color: var(–label-primary);
+letter-spacing: -0.2px;
+}
+
+.sum-hours-big {
+font-size: 34px;
+font-weight: 300;
+letter-spacing: -1.5px;
+line-height: 1;
+animation: cardIn 0.4s ease;
+}
+
+.sum-hours-label {
+font-size: 10px;
+color: var(–label-tertiary);
+text-align: right;
+margin-top: 2px;
+text-transform: uppercase;
+letter-spacing: 0.3px;
+font-weight: 500;
+}
+
+.sum-body { padding: 10px 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+
+.sum-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 9px 10px;
+border-radius: var(–radius-sm);
+background: var(–bg-tertiary);
+}
+
+.sum-row-left {
+display: flex; align-items: center; gap: 10px;
+font-size: 13px; color: var(–label-secondary); font-weight: 400;
+}
+
+.sum-row-icon { display:flex; align-items:center; width:18px; height:18px; }
+.sum-row-days { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+.sum-row-h    { font-size: 10px; color: var(–label-tertiary); text-align: right; margin-top: 1px; font-weight: 500; }
+
+/* ══ MODAL ══ */
+.modal-overlay {
+position: fixed; inset: 0; z-index: 999;
+background: rgba(0,0,0,0.5);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+display: flex; align-items: flex-end; justify-content: center;
+animation: overlayIn 0.2s ease;
+}
+@keyframes overlayIn { from{opacity:0;} to{opacity:1;} }
+
+.modal {
+background: var(–bg-secondary);
+border-radius: 24px 24px 0 0;
+padding: 12px 20px 48px;
+width: 100%; max-width: 480px;
+border-top: 0.5px solid var(–separator);
+animation: modalUp 0.3s cubic-bezier(0.34,1.2,0.64,1);
+}
+@keyframes modalUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
+
+.modal-handle {
+width: 36px; height: 4px; border-radius: 2px;
+background: var(–bg-quaternary); margin: 0 auto 20px;
+}
+
+.modal-date {
+font-size: 12px; font-weight: 600;
+letter-spacing: 0.4px; text-transform: uppercase;
+color: var(–label-tertiary); margin-bottom: 4px;
+}
+
+.modal-shift {
+font-size: 19px; font-weight: 700;
+letter-spacing: -0.3px; margin-bottom: 20px;
+color: var(–label-primary);
+}
+
+.modal-divider { height: 0.5px; background: var(–separator-opaque); margin-bottom: 16px; }
+
+.modal-question {
+font-size: 13px; font-weight: 400;
+color: var(–label-secondary); margin-bottom: 12px;
+}
+
+.modal-btns { display: flex; flex-direction: column; gap: 10px; }
+
+.modal-btn {
+padding: 15px 16px;
+border-radius: var(–radius-md);
+border: none; cursor: pointer;
+font-family: inherit;
+font-size: 15px; font-weight: 600;
+text-align: left;
+display: flex; align-items: center; gap: 12px;
+transition: opacity 0.15s, transform 0.12s;
+letter-spacing: -0.1px;
+}
+.modal-btn:active { opacity: 0.7; transform: scale(0.97); }
+
+.modal-btn.btn-urlop        { background: rgba(48,209,88,0.15);  color: var(–green); }
+.modal-btn.btn-cancel-urlop { background: rgba(255,69,58,0.15);  color: var(–red); }
+.modal-btn.btn-close        { background: var(–bg-tertiary);    color: var(–label-secondary); }
+.modal-btn-icon { font-size: 20px; }
+
+/* ══ LEGEND ══ */
+.legend {
+display: flex; gap: 6px; flex-wrap: wrap;
+padding: 4px 16px 32px;
+}
+
+.legend-item {
+display: flex; align-items: center; gap: 5px;
+font-size: 11px; font-weight: 500;
+color: var(–label-secondary);
+background: var(–bg-secondary);
+border: 0.5px solid var(–separator);
+border-radius: 100px;
+padding: 4px 10px;
+}
+
+.legend-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ══ SCROLL BAR ══ */
+::-webkit-scrollbar { width: 0; }
+</style>
+
+</head>
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+  <div class="header-logo-row">
+    <div class="logo-pill">
+      <img class="logo-img" src="data:image/png;base64,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" alt="FIBRIS">
+      <span class="logo-label">FIBRIS</span>
+    </div>
+    <button class="today-pill" onclick="goToday()">Dziś</button>
+  </div>
+  <div class="today-card" id="todayCard">
+    <div>
+      <div class="tc-eyebrow">Dzisiaj</div>
+      <div class="tc-name" id="tcName"></div>
+      <div class="tc-hours" id="tcHours"></div>
+    </div>
+    <div class="tc-icon" id="tcIcon"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+
+<div class="cal-nav">
+  <div class="month-label" id="monthLabel"></div>
+  <div class="nav-cluster">
+    <button class="nav-btn" onclick="changeMonth(-1)">&#8249;</button>
+    <button class="nav-btn" onclick="changeMonth(1)">&#8250;</button>
+  </div>
+</div>
+
+<!-- WEEKDAYS -->
+
+<div class="weekdays">
+  <div class="weekday">Pn</div><div class="weekday">Wt</div><div class="weekday">Śr</div>
+  <div class="weekday">Cz</div><div class="weekday">Pt</div><div class="weekday">So</div>
+  <div class="weekday">Nd</div>
+</div>
+
+<!-- GRID -->
+
+<div class="cal-grid" id="calGrid"></div>
+
+<!-- PANELS -->
+
+<div id="detailPanel"></div>
+<div id="overtimePanel"></div>
+<div id="summaryPanel"></div>
+
+<!-- LEGEND -->
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--ranna)"></div>Ranna · I</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--popol)"></div>Popołudniowa · II</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--nocna)"></div>Nocna · III</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--wolne)"></div>Wolne</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--urlop)"></div>Urlop</div>
+</div>
+
+<!-- MODAL -->
+
+<div id="modalOverlay" class="modal-overlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-handle"></div>
+    <div class="modal-date" id="modalDate"></div>
+    <div class="modal-shift" id="modalShift"></div>
+    <div class="modal-divider"></div>
+    <div class="modal-question">Co chcesz zrobić z tym dniem?</div>
+    <div class="modal-btns" id="modalBtns"></div>
+  </div>
+</div>
+
+<script>
+  const SHIFTS = [
+    {key:'ranna',name:'Ranna',        hours:'6:00 – 14:00', color:'#ff9f0a',bg:'rgba(255,159,10,0.15)',cls:'ranna',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>',roman:'I'},
+    {key:'ranna',name:'Ranna',        hours:'6:00 – 14:00', color:'#ff9f0a',bg:'rgba(255,159,10,0.15)',cls:'ranna',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>',roman:'I'},
+    {key:'popol',name:'Popołudniowa', hours:'14:00 – 22:00',color:'#30d158',bg:'rgba(48,209,88,0.12)', cls:'popol',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 8a4 4 0 0 1 4 4H8a4 4 0 0 1 4-4z" fill="currentColor" opacity="0.25"/><path d="M8 12a4 4 0 0 0 8 0"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="5"/><line x1="5.6" y1="5.6" x2="7" y2="7"/><line x1="18.4" y1="5.6" x2="17" y2="7"/><line x1="3" y1="17" x2="21" y2="17"/></svg>',roman:'II'},
+    {key:'popol',name:'Popołudniowa', hours:'14:00 – 22:00',color:'#30d158',bg:'rgba(48,209,88,0.12)', cls:'popol',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 8a4 4 0 0 1 4 4H8a4 4 0 0 1 4-4z" fill="currentColor" opacity="0.25"/><path d="M8 12a4 4 0 0 0 8 0"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="5"/><line x1="5.6" y1="5.6" x2="7" y2="7"/><line x1="18.4" y1="5.6" x2="17" y2="7"/><line x1="3" y1="17" x2="21" y2="17"/></svg>',roman:'II'},
+    {key:'nocna',name:'Nocna',        hours:'22:00 – 6:00', color:'#5e5ce6',bg:'rgba(94,92,230,0.15)', cls:'nocna',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" opacity="0.2"/><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',roman:'III'},
+    {key:'nocna',name:'Nocna',        hours:'22:00 – 6:00', color:'#5e5ce6',bg:'rgba(94,92,230,0.15)', cls:'nocna',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" opacity="0.2"/><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',roman:'III'},
+    {key:'wolne',name:'Wolne',        hours:'',             color:'#ff453a',bg:'rgba(255,69,58,0.12)',  cls:'wolne',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M3 13c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><circle cx="12" cy="7" r="2" fill="currentColor" opacity="0.3"/><line x1="12" y1="9" x2="12" y2="11"/></svg>',roman:''},
+    {key:'wolne',name:'Wolne',        hours:'',             color:'#ff453a',bg:'rgba(255,69,58,0.12)',  cls:'wolne',icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M3 13c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><circle cx="12" cy="7" r="2" fill="currentColor" opacity="0.3"/><line x1="12" y1="9" x2="12" y2="11"/></svg>',roman:''},
+  ];
+
+  const WYMIAR = {
+    2025:[160,160,168,176,160,168,184,168,168,184,152,160],
+    2026:[160,160,176,168,160,168,184,160,176,184,160,160],
+  };
+
+  function getWymiar(y,m){
+    if(WYMIAR[y]) return WYMIAR[y][m];
+    let wd=0,days=new Date(y,m+1,0).getDate();
+    for(let i=1;i<=days;i++){const d=new Date(y,m,i).getDay();if(d>=1&&d<=5)wd++;}
+    return wd*8;
+  }
+
+  const REF_DATE=new Date(2026,2,5),REF_INDEX=2;
+
+  function getShift(date){
+    const diff=Math.round((new Date(date.getFullYear(),date.getMonth(),date.getDate())-REF_DATE)/86400000);
+    return SHIFTS[((diff+REF_INDEX)%8+8)%8];
+  }
+
+  const MONTHS_PL=['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
+  const DAYS_PL=['Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota','Niedziela'];
+
+  const today=new Date();
+  let viewYear,viewMonth,selectedDate=null,modalDate=null;
+
+  // Urlopy
+  function loadU(){try{return JSON.parse(localStorage.getItem('fibris_urlopy')||'{}');}catch(e){return{};}}
+  function saveU(u){try{localStorage.setItem('fibris_urlopy',JSON.stringify(u));}catch(e){}}
+  function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function isUrlop(d){return !!loadU()[dateKey(d)];}
+
+  function init(){
+    viewYear=today.getFullYear();viewMonth=today.getMonth();
+    renderToday();renderCalendar();
+  }
+
+  function renderToday(){
+    const s=getShift(today);
+    const card=document.getElementById('todayCard');
+    card.style.borderLeft='3px solid '+s.color;
+    document.getElementById('tcName').textContent=s.name;
+    document.getElementById('tcName').style.color=s.color;
+    document.getElementById('tcHours').textContent=s.hours||'Dzień wolny';
+    document.getElementById('tcIcon').style.color=s.color;
+    const tcIconEl=document.getElementById('tcIcon');
+    tcIconEl.innerHTML=s.icon;
+    tcIconEl.style.color=s.color;
+  }
+
+  function renderCalendar(){
+    document.getElementById('monthLabel').textContent=MONTHS_PL[viewMonth]+' '+viewYear;
+    renderOvertime();renderSummary();
+    const grid=document.getElementById('calGrid');
+    grid.innerHTML='';
+    let sd=new Date(viewYear,viewMonth,1).getDay();
+    sd=sd===0?6:sd-1;
+    const dim=new Date(viewYear,viewMonth+1,0).getDate();
+    for(let i=0;i<sd;i++){const e=document.createElement('div');e.className='cal-cell empty';grid.appendChild(e);}
+    for(let d=1;d<=dim;d++){
+      const date=new Date(viewYear,viewMonth,d);
+      const s=getShift(date);
+      const isT=date.toDateString()===today.toDateString();
+      const isSel=selectedDate&&date.toDateString()===selectedDate.toDateString();
+      const onU=isUrlop(date);
+      const cell=document.createElement('div');
+      cell.className='cal-cell '+s.cls+(isT?' today-cell':'')+(isSel?' selected-cell':'')+(onU?' urlop':'');
+      const romanHtml=onU
+        ?'<span class="roman" style="color:#30d158;opacity:0.8;font-size:6px">urlop</span>'
+        :(s.roman?'<span class="roman">'+s.roman+'</span>':'');
+      cell.innerHTML='<span class="day-num">'+d+'</span>'+romanHtml+'<div class="shift-pip"></div>';
+      cell.addEventListener('click',()=>openModal(date));
+      grid.appendChild(cell);
+    }
+  }
+
+  function openModal(date){
+    modalDate=date;
+    const s=getShift(date);
+    const dow=date.getDay(),di=dow===0?6:dow-1;
+    const ds=DAYS_PL[di]+', '+date.getDate()+' '+MONTHS_PL[date.getMonth()]+' '+date.getFullYear();
+    document.getElementById('modalDate').textContent=ds;
+    const onU=isUrlop(date);
+    document.getElementById('modalShift').innerHTML=onU
+      ?'<span style="color:#30d158"><svg viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="1.8" stroke-linecap="round" width="18" height="18" style="vertical-align:middle;margin-right:6px"><path d="M12 2C9 2 6 5 6 9c0 3 2 5 4 6v7h4v-7c2-1 4-3 4-6 0-4-3-7-6-7z" fill="rgba(48,209,88,0.15)"/><path d="M12 2C9 2 6 5 6 9c0 3 2 5 4 6v7h4v-7c2-1 4-3 4-6 0-4-3-7-6-7z"/></svg> Urlop zaznaczony</span>'
+      :'<span style="display:flex;align-items:center;gap:8px"><span style="color:'+s.color+'">'+s.icon+'</span><span style="color:'+s.color+'">'+s.name+'</span></span>'+(s.hours?' <span style="color:var(--label-tertiary);font-size:14px;font-weight:400">· '+s.hours+'</span>':'');
+    document.getElementById('modalBtns').innerHTML=onU
+      ?`<button class="modal-btn btn-cancel-urlop" onclick="doUrlop(false)"><span class="modal-btn-icon">✕</span>Usuń urlop</button>
+         <button class="modal-btn btn-close" onclick="closeModal()"><span class="modal-btn-icon">↩</span>Zamknij</button>`
+      :`<button class="modal-btn btn-urlop" onclick="doUrlop(true)"><span class="modal-btn-icon">🌿</span>Oznacz jako urlop</button>
+        <button class="modal-btn btn-close" onclick="closeModal()"><span class="modal-btn-icon">↩</span>Zamknij</button>`;
+    document.getElementById('modalOverlay').style.display='flex';
+    document.body.style.overflow='hidden';
+  }
+
+  function doUrlop(add){
+    const u=loadU(),k=dateKey(modalDate);
+    if(add)u[k]=1;else delete u[k];
+    saveU(u);closeModal();renderCalendar();
+  }
+
+  function closeModal(e){
+    if(e&&e.target!==document.getElementById('modalOverlay'))return;
+    document.getElementById('modalOverlay').style.display='none';
+    document.body.style.overflow='';modalDate=null;
+  }
+
+  function renderOvertime(){
+    const dim=new Date(viewYear,viewMonth+1,0).getDate();
+    let prac=0;
+    for(let d=1;d<=dim;d++){
+      const dt=new Date(viewYear,viewMonth,d);
+      if(!isUrlop(dt)&&getShift(dt).key!=='wolne') prac++;
+    }
+    const przepr=prac*8,wym=getWymiar(viewYear,viewMonth),nadg=przepr-wym;
+    const isPos=nadg>=0;
+    const col=isPos?'#ff9f0a':'#5e5ce6';
+    const pct=Math.min(100,Math.round(przepr/wym*100));
+    document.getElementById('overtimePanel').innerHTML=
+      '<div class="card">'+
+        '<div class="ot-head">'+
+          '<div><div class="ot-eyebrow">Nadgodziny</div><div class="ot-month">'+MONTHS_PL[viewMonth]+' '+viewYear+'</div></div>'+
+          '<div class="ot-value">'+
+            '<div class="ot-big" style="color:'+col+'">'+(isPos?'+':'')+nadg+' h</div>'+
+            '<div class="ot-big-label">'+(isPos?'nadgodzin':'poniżej normy')+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="ot-body">'+
+          '<div class="ot-row"><div class="ot-row-label">Przepracujesz</div><div class="ot-row-val">'+przepr+' h &middot; '+prac+' dni</div></div>'+
+          '<div class="ot-row"><div class="ot-row-label">Norma etatu</div><div class="ot-row-val">'+wym+' h</div></div>'+
+          '<div class="ot-bar-wrap">'+
+            '<div class="ot-bar-label"><span>Realizacja normy</span><span style="color:'+col+';font-weight:700">'+pct+'%</span></div>'+
+            '<div class="ot-bar-track"><div class="ot-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  function renderSummary(){
+    const dim=new Date(viewYear,viewMonth+1,0).getDate();
+    let c={ranna:0,popol:0,nocna:0,wolne:0,urlop:0};
+    for(let d=1;d<=dim;d++){
+      const dt=new Date(viewYear,viewMonth,d);
+      if(isUrlop(dt))c.urlop++;
+      else c[getShift(dt).key]++;
+    }
+    const prac=c.ranna+c.popol+c.nocna;
+    const mkSvg=(d,c)=>'<svg viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.8" stroke-linecap="round" width="16" height="16">'+d+'</svg>';
+    const sunD='<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>';
+    const popD='<path d="M8 12a4 4 0 0 0 8 0"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="5"/><line x1="3" y1="17" x2="21" y2="17"/>';
+    const moonD='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="rgba(94,92,230,0.2)"/><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    const waveD='<path d="M3 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M3 13c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>';
+    const leafD='<path d="M12 2C9 2 6 5 6 9c0 3 2 5 4 6v7h4v-7c2-1 4-3 4-6 0-4-3-7-6-7z" fill="rgba(48,209,88,0.2)"/><path d="M12 2C9 2 6 5 6 9c0 3 2 5 4 6v7h4v-7c2-1 4-3 4-6 0-4-3-7-6-7z"/>';
+    const rows=[
+      {icon:mkSvg(sunD,'#ff9f0a'), label:'Ranna',        color:'#ff9f0a',days:c.ranna,h:c.ranna*8},
+      {icon:mkSvg(popD,'#30d158'), label:'Popołudniowa', color:'#30d158',days:c.popol,h:c.popol*8},
+      {icon:mkSvg(moonD,'#5e5ce6'),label:'Nocna',         color:'#5e5ce6',days:c.nocna,h:c.nocna*8},
+      {icon:mkSvg(waveD,'#ff453a'),label:'Wolne',         color:'#ff453a',days:c.wolne,h:null},
+      {icon:mkSvg(leafD,'#30d158'),label:'Urlop',         color:'#30d158',days:c.urlop,h:null},
+    ];
+    const rowsHtml=rows.map(r=>
+      '<div class="sum-row">'+
+        '<div class="sum-row-left"><span class="sum-row-icon">'+r.icon+'</span>'+r.label+'</div>'+
+        '<div style="text-align:right">'+
+          '<div class="sum-row-days" style="color:'+r.color+'">'+r.days+'</div>'+
+          '<div class="sum-row-h">'+(r.h!==null?r.h+' h':'dni')+'</div>'+
+        '</div>'+
+      '</div>'
+    ).join('');
+    document.getElementById('summaryPanel').innerHTML=
+      '<div class="card">'+
+        '<div class="sum-head">'+
+          '<div><div class="sum-eyebrow">Podsumowanie</div><div class="sum-month-label">'+MONTHS_PL[viewMonth]+' '+viewYear+'</div></div>'+
+          '<div>'+
+            '<div class="sum-hours-big">'+(prac*8)+'<span style="font-size:18px;font-weight:300;letter-spacing:0"> h</span></div>'+
+            '<div class="sum-hours-label">'+prac+' dni pracy</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="sum-body">'+rowsHtml+'</div>'+
+      '</div>';
+  }
+
+  function changeMonth(dir){
+    viewMonth+=dir;
+    if(viewMonth>11){viewMonth=0;viewYear++;}
+    if(viewMonth<0){viewMonth=11;viewYear--;}
+    renderCalendar();
+  }
+
+  function goToday(){
+    viewYear=today.getFullYear();viewMonth=today.getMonth();
+    selectedDate=null;
+    document.getElementById('detailPanel').innerHTML='';
+    renderCalendar();
+  }
+
+  init();
+</script>
+
+</body>
+</html>
